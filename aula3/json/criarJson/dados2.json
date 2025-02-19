@@ -1,0 +1,12 @@
+{
+  "nome": "Davi",
+  "idade": 19,
+  "endereco": {
+    "rua": "rua juquia",
+    "cidade": "santo andré"
+  },
+  "telefone": [
+    "11-946522127",
+    "11-946522127"
+  ]
+}

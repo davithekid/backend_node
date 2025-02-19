@@ -1,0 +1,14 @@
+{
+"nome": "Davi Chagas",
+"idade": 19,
+"endereço":{
+    "rua": "Rua Juquiá, 1188",
+    "cidade": "Santo André"
+},
+"telefones": [
+    "11-946522127",
+    "11-946522127"
+],
+"ativo": true,
+"nulo": null
+}
