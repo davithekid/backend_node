@@ -1,0 +1,16 @@
+{
+
+    "produtos": [
+
+        {
+            "nome": "RTX 4090", "preco": 2400, "descricao": "placa de video muito top", "categoria": "Hardware"
+            
+        },
+            {
+                "nome": "RX 580", "preco": 700 , "descricao": "Placa de video do ramon", "categoria": "Hardware"
+
+            }
+    ]
+    
+
+}
