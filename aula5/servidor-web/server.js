@@ -27,13 +27,30 @@ const server = http.createServer((req, res) => {
         const produto = produtos.find(p => p.id === id);
 
         if(produto){
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, {'Content-Type':'application/json'});
             res.end(JSON.stringify(produto));
 
         } else {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.writeHead(404, { 'Content-type':'text/plain' });
             res.end('Erro 404 (esse produto não exitse)')
         }
+
+        // method post
+      } else if (url === '/contato' && method ==='POST'){
+        // criando corpo
+        let body = '';
+        // resposta servidor
+        req.on('data', chunck => { // chunck para pegar um pedaço
+            body += chunck; 
+        });
+
+        // resposta usuario
+        req.on('end', ()=>{
+            console.log('Dados recbidos: ', body);
+            res.writeHead(201, {'Content-type':'text/plain'}); // 201 para post
+            res.end('Dados recebidos com sucesso!!!');
+        })
+
       }
 
 
