@@ -5,7 +5,7 @@ const produtos = [
     {      id:2 , nome: 'xiwT', preço: 7.50 },
     {      id:3 , nome: 'otnert', preço: 8.00  },
 ]
-    
+
 
 // criando server
 const server = http.createServer((req, res) => {
@@ -51,8 +51,12 @@ const server = http.createServer((req, res) => {
             res.end('Dados recebidos com sucesso!!!');
         })
 
+        // para url não encontrada
+      } else {
+        res.writeHead(404, {'Content-Type': "text/plain"} );
+        res.end('<h1>Pagina não encontrado</h1>')
       }
-
+    
 
 });
 
