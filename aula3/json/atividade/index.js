@@ -7,7 +7,7 @@ const readLine = require('readline').createInterface({
 })
 
 
-// lendo meu json
+//b lendo meu json
 fs.readFile('dados.json', 'utf8', (err, data) => {
     if (err) {
         console.log('Erro na leitura do json', err);
