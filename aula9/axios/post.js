@@ -2,7 +2,7 @@ const axios = require('axios');
 
 axios.post('https://jsonplaceholder.typicode.com/todos', {
     userId: 1,
-    tittle: "Comprar pão",
+    title: "Comprar pão",
     complete: false
 })
 

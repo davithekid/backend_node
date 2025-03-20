@@ -19,12 +19,14 @@ async function exibirDetalhesProdutos(id) {
         const response = await axios.get(`${API_URL}/produtos/${id}`)
         return response.data;
     } catch (error) {
-        console.error(chalk(`erro ao exibir produtos: com ID: ${id} `), error.message);
+        console.error(chalk.red(`erro ao exibir produtos: com ID: ${id} `), error.message);
         return null;
     }
 }
 
 async function exibirMenu() {
+
+    console.log('\n')
     const perguntas = [
         {
             type: "list",
@@ -44,7 +46,18 @@ async function exibirMenu() {
         switch (resposta.opcao) {
             case 'listar':
                 const produtos = await listarProdutos();
-                console.log(produtos)
+
+                if (Array.isArray(produtos) && produtos.length > 0) {
+                    console.log(chalk.green('Lista de Produtos: '));
+
+                    produtos.forEach(produto => {
+                        console.log(`${chalk.cyan(produto.id)}: ${chalk.blueBright(produto.nome)} - R$ ${chalk.yellow(produto.preco)}`)
+                    })
+
+                } else {
+                    console.log(chalk.yellow('Nenhum produto encontrado.'))
+                }
+
                 exibirMenu();
                 break;
             case 'exibir':
@@ -57,10 +70,14 @@ async function exibirMenu() {
                     }
                 ]);
                 const produto = await exibirDetalhesProdutos(idResposta.id);
-                console.log(produto)
+                if (produto) {
+                    console.log(`${chalk.cyan(produto.id)}: ${chalk.blueBright(produto.nome)} - R$ ${chalk.yellow(produto.preco)}`)
+                } else {
+                    console.log(chalk.yellow('Produto não encontrado'))
+                }
                 exibirMenu();
                 break;
-                case 'sair': 
+            case 'sair':
                 console.log(chalk.blue('saindo do sistema...'))
                 break;
         }
