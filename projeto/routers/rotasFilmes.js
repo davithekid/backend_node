@@ -1,5 +1,6 @@
 import express from "express";
 import fs from 'fs'
+import axios from "axios";
 const router = express.Router();
 
 let filmes = [];
@@ -12,7 +13,8 @@ try {
 }
 
 router.get('/', (req, res) => {
-    res.status(200).send('Página inicial (FILMES)');
+    // res.status(200).send('Página inicial (FILMES)');
+    res.status(200).send(filmes)
 })
 
 router.get('/:id', (req, res) => {
@@ -26,15 +28,23 @@ router.get('/:id', (req, res) => {
     }
 })
 
-// router.post('/', (req, res) => {
-//     const novoFilme = req.body;
-//     console.log('Novo Filme adicionado: ', novoFilme);
-//     res.status(200).send('Filme adicionado com sucesso!!')
-// })
+router.post('/', (req, res) => {
+    const novoFilme = req.body;
+    console.log('Novo Filme adicionado: ', novoFilme);
+    res.status(200).send('Filme adicionado com sucesso!!')
+})
 
-// router.options('/:id', (req, res) => {
-//     res.header('Allow', 'POST');
-//     res.status(204).send(novoFilme);
-// })
+router.patch('/:id', (req, res) => {
+    const alterado = req.body;
+    console.log('Filme alterado com sucesso: : ', alterado);
+    res.status(200).send('Filme alterado!!')
+})
+
+router.delete('/:id', (req, res) => {
+    const deletado = req.body;
+    console.log('Filme deletado com sucesso: ', deletado);
+    res.status(200).send('Filme deletado!!')
+})
+
 
 export default router;
