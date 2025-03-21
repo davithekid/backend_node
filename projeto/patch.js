@@ -9,7 +9,7 @@ axios.patch('http://localhost:3000/filmes/2', {
 })
 
     .then(response => {
-        console.log('Dados recebidos: ', response.data)
+        console.log('Cátalogo adicionado com sucesso: \n', response.data)
     })
     .catch(error => {
         console.error('Ocorreu um erro: ', error)

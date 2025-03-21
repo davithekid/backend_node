@@ -9,7 +9,7 @@ axios.post('http://localhost:3000/filmes/', {
 })
 
     .then(response => {
-        console.log('Dados recebidos: ', response.data)
+        console.log('Filme adicionado ao catálogo com sucesso!!!\n: ', response.data)
     })
     .catch(error => {
         console.error('Ocorreu um erro: ', error)

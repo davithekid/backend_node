@@ -12,11 +12,13 @@ try {
     filmes = [];
 }
 
+// rota inicial /filmes
 router.get('/', (req, res) => {
     // res.status(200).send('Página inicial (FILMES)');
     res.status(200).send(filmes)
 })
 
+// get
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const filme = filmes.find(f => f.id === id)
@@ -30,20 +32,21 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     const novoFilme = req.body;
-    console.log('Novo Filme adicionado: ', novoFilme);
-    res.status(200).send('Filme adicionado com sucesso!!')
+    console.log('Novo filme adicionado: ', novoFilme);
+    res.status(200).send('Filme adicionado ao catálogo com sucesso!!!')
 })
-
+// patch
 router.patch('/:id', (req, res) => {
     const alterado = req.body;
-    console.log('Filme alterado com sucesso: : ', alterado);
-    res.status(200).send('Filme alterado!!')
+    console.log('Filme alterado com sucesso: ', alterado);
+    res.status(200).send('Filme alterado no catálogo com sucesso!!!')
 })
 
+// delete
 router.delete('/:id', (req, res) => {
     const deletado = req.body;
     console.log('Filme deletado com sucesso: ', deletado);
-    res.status(200).send('Filme deletado!!')
+    res.status(200).send('Filme deletado no catálogo com sucesso!!!')
 })
 
 
