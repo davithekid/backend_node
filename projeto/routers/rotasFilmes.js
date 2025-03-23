@@ -26,7 +26,7 @@ router.get('/:id', (req, res) => {
     if (filme) {
         res.send(filme)
     } else {
-        res.status(404).send('<h1 style="color:red;">ERROR 404... Página não encontrada</h1>');
+        res.status(404).send('<h1 style="color:red;">ERROR 404... Produto não encontrado</h1>');
     }
 })
 
