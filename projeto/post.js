@@ -15,7 +15,4 @@ axios.post('http://localhost:3000/filmes/', {
         console.error('Ocorreu um erro: ', error)
     })
 
-    export const http = axios.create({
-        baseURL: 'http://localhost:3000/admin',
-        headers: {'User-Drk': 'Davi'}
-      });
+ 

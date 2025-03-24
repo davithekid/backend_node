@@ -1,12 +1,53 @@
 [
-    {"id": 1, "nome": "Mid90s", "genero" :"drama"},
-    {"id": 2, "nome": "Scarface", "genero" :"drama, crime, ação"},
-    {"id": 3, "nome": "Pulp Ficiton", "genero" :"crime, thriller"},
-    {"id": 4, "nome": "Panico", "genero" :"Misterio, crime, horror"},
-    {"id": 5, "nome": "Star Wars: Episodio III", "genero" :"Ficção cientifica, aventura, ação"},
-    {"id": 6, "nome": "Como Treinar Seu Dragão", "genero" :"fantasia, animação"},
-    {"id": 7, "nome": "Creed", "genero" :"drama, ação"},
-    {"id": 8, "nome": "Duna", "genero" :"Ficção cientifica, aventura"},
-    {"id": 9, "nome": "Homem-Aranha: Atráves do Aranhaverso", "genero" :"animação , aventura"},
-    {"id": 10, "nome": "Amor de Aluguel", "genero" :"Romance, comédia"}
+  {
+    "id": 1,
+    "nome": "Mid90s",
+    "genero": "drama"
+  },
+  {
+    "id": 2,
+    "nome": "Scarface",
+    "genero": "drama, crime, ação"
+  },
+  {
+    "id": 3,
+    "nome": "Pulp Ficiton",
+    "genero": "crime, thriller"
+  },
+  {
+    "id": 4,
+    "nome": "Panico",
+    "genero": "Misterio, crime, horror"
+  },
+  {
+    "id": 5,
+    "nome": "Star Wars: Episodio III",
+    "genero": "Ficção cientifica, aventura, ação"
+  },
+  {
+    "id": 6,
+    "nome": "Como Treinar Seu Dragão",
+    "genero": "fantasia, animação"
+  },
+  {
+    "id": 7,
+    "nome": "Creed",
+    "genero": "drama, ação"
+  },
+  {
+    "id": 8,
+    "nome": "Duna",
+    "genero": "Ficção cientifica, aventura"
+  },
+  {
+    "id": 9,
+    "nome": "Homem-Aranha: Atráves do Aranhaverso",
+    "genero": "animação , aventura"
+  },
+  {
+    "id": 10,
+    "nome": "Amor de Aluguel",
+    "genero": "Romance, comédia"
+  }
+  
 ]

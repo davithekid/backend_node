@@ -49,5 +49,10 @@ router.delete('/:id', (req, res) => {
     res.status(200).send('Filme deletado no catálogo com sucesso!!!')
 })
 
+router.options('/:id', (req, res) =>{
+    res.header('Allow' , 'POST');
+    res.status(204).send();
+})
+
 
 export default router;

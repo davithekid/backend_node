@@ -16,7 +16,7 @@ const logger = (req, res, next) => {
     const newLine = `${data.toISOString()} ${req.method} ${req.url}`;
     fs.appendFile('arquivo.txt', newLine, err => {
         if (err) throw err;
-        console.log('arquivo salvo')
+        console.log('Logging salvo')
     })
     
 }
