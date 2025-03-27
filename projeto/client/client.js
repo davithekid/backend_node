@@ -49,11 +49,11 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                 name: "opcao",
                 message: chalk.yellow('Escolha uma opção: '),
                 choices: [
-                    { name: chalk.green('Catálogo'), value: 'listar' },
+                    { name: chalk.green('Exibir Catálogo'), value: 'listar' },
                     { name: chalk.green('Exibir detalhes do filme'), value: 'exibir' },
                     { name: chalk.green('Adicionar um filme'), value: 'adicionar' },
-                    { name: chalk.green('Atualizar um filme'), value: 'alterar' },
-                    { name: chalk.gray('Deletar um filme'), value: 'deletar' },
+                    { name: chalk.green('Atualizar um filme'), value: 'atualizar' },
+                    { name: chalk.redBright('Deletar um filme'), value: 'deletar' },
                     { name: chalk.green('Sair da operação'), value: 'sair' }
                 ]
             }
@@ -104,9 +104,10 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     ]);
 
                     try {
+
                         filmeNovo.id = parseInt(filmeNovo.id)
+                        dados.push(dados.id = filmeNovo)
                         
-                        dados[filmeNovo.id] = filmeNovo
                         const jsonData = JSON.stringify(dados, null, 2)
                         
                         console.log(chalk.green('Filme adicionado com sucesso!!'));
@@ -118,28 +119,81 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     } catch (error) {
                         console.error(error)
                     }
-
                     break;
 
-                // case 'deletar':
+                    case 'atualizar':
+                        const filmeAtualizado = await inquirer.prompt([
+                            {
+                                message: "Digite o ID do filme: ",
+                                type: "input",
+                                name: "id",
+                            },
+                            {
+                                message: "Digite o novo nome do filme: ",
+                                type: "input",
+                                name: "nome",
+                            },
+                            {
+                                message: "Digite o genero do filme: ",
+                                type: "input",
+                                name: "genero"
+    
+                            },
+    
+                        ]);
+    
+                        try {
+                            filmeAtualizado.id = parseInt(filmeAtualizado.id)
+                            
+                            dados[filmeAtualizado.id] = filmeAtualizado 
+                            const jsonData = JSON.stringify(dados, null, 2)
+                            
+                            console.log(chalk.green('Filme atualizado com sucesso!!'));
+                            fs.writeFileSync('../filmes.json', jsonData, err=> {
+                                if (err) throw err;
+                            })
+                            
+    
+                        } catch (error) {
+                            console.error(error)
+                        }
+                        break;
+                        
+                        case 'deletar':
+                            const deletarFilme = await inquirer.prompt([
+                                {
+                                    message: "Digite o ID do filme: ",
+                                    type: "input",
+                                    name: "id",
+                                },
+                                
+        
+                            ]);
+        
+                            try {
+                                deletarFilme.id = parseInt(deletarFilme.id)
+                                
+                                const index = dados.indexOf(dados.id = deletarFilme.id)
+                                if (index > -1){
+                                    dados.splice(index, 1)
+                                }
+                                // dados.pop(dados.id = deletarFilme)
+                            
+                                const jsonData = JSON.stringify(dados, null, 2)
+                                
+                                console.log(chalk.green('Filme atualizado com sucesso!!'));
+                                fs.writeFileSync('../filmes.json', jsonData, err=> {
+                                    if (err) throw err;
+                                })
+                                
+        
+                            } catch (error) {
+                                console.error(error)
+                            }
+                            break;
 
-                //     const removerFilme = await inquirer.prompt([
-                //         {
-                //             message: "Digite o ID do filme: ",
-                //             type: "input",
-                //             name: "id"
-                //         }
-                //     ])
-                //     try {
-                //         delete dados.removerFilme
-                //         console.log(dados)
-                //         const jsonData = JSON.stringify(dados, null, 2);
-                //         fs.writeFile('../filmes.json', jsonData, function (err) {
-                //         })
-                //     } catch (error) {
-                //         console.error(error)
-                //     }
-                //     break;
+
+                
 
                 case 'exibir':
                     const idReposta = await inquirer.prompt([
