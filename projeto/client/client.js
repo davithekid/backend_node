@@ -49,12 +49,12 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                 name: "opcao",
                 message: chalk.yellow('Escolha uma opção: '),
                 choices: [
-                    { name: chalk.green('Exibir Catálogo'), value: 'listar' },
-                    { name: chalk.green('Exibir detalhes do filme'), value: 'exibir' },
-                    { name: chalk.green('Adicionar um filme'), value: 'adicionar' },
-                    { name: chalk.green('Atualizar um filme'), value: 'atualizar' },
-                    { name: chalk.redBright('Deletar um filme'), value: 'deletar' },
-                    { name: chalk.green('Sair da operação'), value: 'sair' }
+                    { name: chalk.cyanBright('Exibir Catálogo'), value: 'listar' },
+                    { name: chalk.cyanBright('Exibir detalhes do filme'), value: 'exibir' },
+                    { name: chalk.cyanBright('Adicionar um filme'), value: 'adicionar' },
+                    { name: chalk.cyanBright('Atualizar um filme'), value: 'atualizar' },
+                    { name: chalk.cyanBright('Deletar um filme'), value: 'deletar' },
+                    { name: chalk.cyanBright('Sair da operação'), value: 'sair' }
                 ]
             }
 
@@ -87,7 +87,6 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                             message: "Digite o ID do filme: ",
                             type: "input",
                             name: "id",
-                            default: "10"
                         },
                         {
                             message: "Digite o nome do filme: ",
@@ -107,10 +106,62 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
 
                         filmeNovo.id = parseInt(filmeNovo.id)
                         dados.push(dados.id = filmeNovo)
+
+                        const jsonData = JSON.stringify(dados, null, 2)
+
+                        console.log(chalk.green('Filme adicionado com sucesso!!'));
+                        fs.writeFileSync('../filmes.json', jsonData, err => {
+                            if (err) throw err;
+                        })
+
+                        axios.post('http://localhost:3000/filmes/', {
+                            id: filmeNovo.id,
+                            nome: filmeNovo.nome,
+                            genero: filmeNovo.genero
+                        })
+
+                            .then(response => {
+                                console.log('Filme adicionado ao catálogo com sucesso!!!\n: ', response.data)
+                            })
+                            .catch(error => {
+                                console.error('Ocorreu um erro: ', error)
+                            })
+
+
+                    } catch (error) {
+                        console.error(error)
+                    }
+                    exibirMenu();
+                    break;
+
+                case 'atualizar':
+                    const filmeAtualizado = await inquirer.prompt([
+                        {
+                            message: "Digite o ID do filme: ",
+                            type: "input",
+                            name: "id",
+                        },
+                        {
+                            message: "Digite o novo nome do filme: ",
+                            type: "input",
+                            name: "nome",
+                        },
+                        {
+                            message: "Digite o genero do filme: ",
+                            type: "input",
+                            name: "genero"
+
+                        },
+
+                    ]);
+
+                    try {
+                        filmeAtualizado.id = parseInt(filmeAtualizado.id)
                         
+                        dados[filmeAtualizado.id -1] = filmeAtualizado
                         const jsonData = JSON.stringify(dados, null, 2)
                         
-                        console.log(chalk.green('Filme adicionado com sucesso!!'));
+                        console.log(chalk.green('Filme atualizado com sucesso!!'));
                         fs.writeFileSync('../filmes.json', jsonData, err=> {
                             if (err) throw err;
                         })
@@ -119,81 +170,46 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     } catch (error) {
                         console.error(error)
                     }
+                    exibirMenu();
                     break;
 
-                    case 'atualizar':
-                        const filmeAtualizado = await inquirer.prompt([
-                            {
-                                message: "Digite o ID do filme: ",
-                                type: "input",
-                                name: "id",
-                            },
-                            {
-                                message: "Digite o novo nome do filme: ",
-                                type: "input",
-                                name: "nome",
-                            },
-                            {
-                                message: "Digite o genero do filme: ",
-                                type: "input",
-                                name: "genero"
-    
-                            },
-    
-                        ]);
-    
-                        try {
-                            filmeAtualizado.id = parseInt(filmeAtualizado.id)
-                            
-                            dados[filmeAtualizado.id] = filmeAtualizado 
-                            const jsonData = JSON.stringify(dados, null, 2)
-                            
-                            console.log(chalk.green('Filme atualizado com sucesso!!'));
-                            fs.writeFileSync('../filmes.json', jsonData, err=> {
-                                if (err) throw err;
+                case 'deletar':
+                    const deletarFilme = await inquirer.prompt([
+                        {
+                            message: "Digite o ID do filme: ",
+                            type: "input",
+                            name: "id",
+                        },
+
+                    ]);
+
+                    try {
+                        deletarFilme.id = parseInt(deletarFilme.id)
+                        dados.splice(dados.id = deletarFilme.id - 1, 1)
+                        const jsonData = JSON.stringify(dados, null, 2)
+
+                        console.log(chalk.green('Filme deletado com sucesso!!'));
+                        fs.writeFileSync('../filmes.json', jsonData, err => {
+                            if (err) throw err;
+                        })
+
+                        axios.delete(`http://localhost:3000/filmes/${deletarFilme.id}`)
+
+                            .then(response => {
+                                console.log('Filme excluído do catálogo!!!\n', response.data)
                             })
-                            
-    
-                        } catch (error) {
-                            console.error(error)
-                        }
-                        break;
-                        
-                        case 'deletar':
-                            const deletarFilme = await inquirer.prompt([
-                                {
-                                    message: "Digite o ID do filme: ",
-                                    type: "input",
-                                    name: "id",
-                                },
-                                
-        
-                            ]);
-        
-                            try {
-                                deletarFilme.id = parseInt(deletarFilme.id)
-                                
-                                const index = dados.indexOf(dados.id = deletarFilme.id)
-                                if (index > -1){
-                                    dados.splice(index, 1)
-                                }
-                                // dados.pop(dados.id = deletarFilme)
-                            
-                                const jsonData = JSON.stringify(dados, null, 2)
-                                
-                                console.log(chalk.green('Filme atualizado com sucesso!!'));
-                                fs.writeFileSync('../filmes.json', jsonData, err=> {
-                                    if (err) throw err;
-                                })
-                                
-        
-                            } catch (error) {
-                                console.error(error)
-                            }
-                            break;
+                            .catch(error => {
+                                console.error('Ocorreu um erro: ', error)
+                            })
+
+                    } catch (error) {
+                        console.error(error)
+                    }
+                    exibirMenu();
+                    break;
 
 
-                
+
 
                 case 'exibir':
                     const idReposta = await inquirer.prompt([

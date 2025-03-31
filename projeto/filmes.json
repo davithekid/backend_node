@@ -48,5 +48,10 @@
     "id": 10,
     "nome": "Amor de Aluguel",
     "genero": "Romance, comédia"
+  },
+  {
+    "id": 11,
+    "nome": "Superbad",
+    "genero": "comedia"
   }
 ]
