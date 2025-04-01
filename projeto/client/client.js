@@ -7,15 +7,15 @@ import { assert } from "console";
 const API_URL = 'http://localhost:3000';
 
 
+// lendo meu arquivo json
 fs.readFile('../filmes.json', 'utf8', (err, data) => {
     if (err) {
         console.log(chalk.red('Erro na leitura do json'), err);
         return;
     }
 
+    // dados recebe meu json
     const dados = JSON.parse(data);
-
-
 
     // criando as funções
     async function listarFilmes() {
@@ -39,8 +39,6 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
         }
     }
 
-
-
     async function exibirMenu() {
         console.log('\n');
         const perguntas = [
@@ -57,8 +55,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     { name: chalk.cyanBright('Sair da operação'), value: 'sair' }
                 ]
             }
-
-        ]
+        ];
 
         try {
             const resposta = await inquirer.prompt(perguntas)
@@ -68,20 +65,19 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     const filmes = await listarFilmes();
 
                     if (Array.isArray(filmes) && filmes.length > 0) {
-                        console.log(chalk.green('Lista de Filme'))
+                        console.log(chalk.green('Catálogo'))
 
                         filmes.forEach(filme => {
-                            console.log(`${chalk.cyan(filme.id)}: ${chalk.blueBright(filme.nome)} - ${chalk.yellow(filme.genero)}`)
+                            console.log(`${chalk.cyan(filme.id)}: ${chalk.blueBright(filme.nome)} , ${chalk.yellow(filme.genero)}`)
                         })
                     } else {
-                        console.log(chalk.yellow('nenhum filme encontrado'))
+                        console.log(chalk.yellow('Nenhum filme encontrado.'))
                     }
 
                     exibirMenu();
                     break;
 
-                case 'adicionar':
-
+                    case 'adicionar':
                     const filmeNovo = await inquirer.prompt([
                         {
                             message: "Digite o ID do filme: ",
@@ -120,20 +116,11 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                             genero: filmeNovo.genero
                         })
 
-                            .then(response => {
-                                console.log('Filme adicionado ao catálogo com sucesso!!!\n: ', response.data)
-                            })
-                            .catch(error => {
-                                console.error('Ocorreu um erro: ', error)
-                            })
-
-
                     } catch (error) {
-                        console.error(error)
+                        console.error(chalk.red(error))
                     }
                     exibirMenu();
                     break;
-
                 case 'atualizar':
                     const filmeAtualizado = await inquirer.prompt([
                         {
@@ -157,18 +144,23 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
 
                     try {
                         filmeAtualizado.id = parseInt(filmeAtualizado.id)
-                        
-                        dados[filmeAtualizado.id -1] = filmeAtualizado
+
+                        dados[filmeAtualizado.id - 1] = filmeAtualizado
                         const jsonData = JSON.stringify(dados, null, 2)
-                        
+
                         console.log(chalk.green('Filme atualizado com sucesso!!'));
-                        fs.writeFileSync('../filmes.json', jsonData, err=> {
+                        fs.writeFileSync('../filmes.json', jsonData, err => {
                             if (err) throw err;
                         })
-                        
 
+                        axios.patch(`http://localhost:3000/filmes/${dados}`, {
+                            id: filmeAtualizado.id,
+                            nome: filmeAtualizado.nome,
+                            genero: filmeAtualizado.genero
+                            
+                        })
                     } catch (error) {
-                        console.error(error)
+                        console.error(chalk.red(error))
                     }
                     exibirMenu();
                     break;
@@ -193,30 +185,21 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                             if (err) throw err;
                         })
 
-                        axios.delete(`http://localhost:3000/filmes/${deletarFilme.id}`)
+                        axios.delete(`http://localhost:3000/filmes/${dados.id}`)
 
-                            .then(response => {
-                                console.log('Filme excluído do catálogo!!!\n', response.data)
-                            })
-                            .catch(error => {
-                                console.error('Ocorreu um erro: ', error)
-                            })
 
                     } catch (error) {
-                        console.error(error)
+                        console.error(chalk.red(error))
                     }
                     exibirMenu();
                     break;
-
-
-
 
                 case 'exibir':
                     const idReposta = await inquirer.prompt([
                         {
                             type: "input",
                             name: "id",
-                            message: chalk.blue('Digite o ID do produto: ')
+                            message: chalk.blue('Digite o ID do filme: ')
                         }
                     ]);
 
@@ -230,7 +213,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     break;
 
                 case 'sair':
-                    console.log(chalk.yellow('saindo do sistema...'))
+                    console.log(chalk.yellow('Saindo do sistema...'))
                     break;
             }
         } catch (error) {

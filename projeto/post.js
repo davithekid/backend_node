@@ -1,5 +1,4 @@
 import axios from "axios";
-import express from "express";
 
 
 axios.post('http://localhost:3000/filmes/', {

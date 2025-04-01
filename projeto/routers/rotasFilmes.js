@@ -2,6 +2,11 @@ import express from "express";
 import fs from 'fs'
 import axios from "axios";
 const router = express.Router();
+const token = "SEGREDO";
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+
+
 
 let filmes = [];
 try {
@@ -50,7 +55,7 @@ router.delete('/:id', (req, res) => {
 })
 
 router.options('/:id', (req, res) =>{
-    res.header('Allow' , 'POST');
+    res.header('Allow' , 'POST, GET, DELETE, PATCH');
     res.status(204).send();
 })
 
