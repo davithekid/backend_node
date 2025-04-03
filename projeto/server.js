@@ -18,7 +18,7 @@ const logger = (req, res, next) => {
         console.log('Salvando logging')
     })
 }
-
+app.use(express.json());
 app.use(logger)
 
 // rota padrão

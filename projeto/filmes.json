@@ -46,17 +46,12 @@
   },
   {
     "id": 10,
-    "nome": "Amor de Aluguel",
-    "genero": "Romance, comédia"
-  },
-  {
-    "id": 11,
-    "nome": "Superbad",
-    "genero": "comedia"
+    "nome": "Amor de aluguel",
+    "genero": "romance"
   },
   {
     "id": 12,
-    "nome": "das",
-    "genero": "dsa"
+    "nome": "DSA",
+    "genero": "DSA"
   }
 ]

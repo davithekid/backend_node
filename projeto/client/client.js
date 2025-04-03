@@ -34,7 +34,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
             const response = await axios.get(`${API_URL}/filmes/${id}`)
             return response.data;
         } catch (error) {
-            console.error(chalk.red(`erro ao exibir filmes com id: ${id}`), error.message)
+            console.error(chalk.red(`Erro ao exibir o filme com o id: ${id}`), error.message)
             return null
         }
     }
@@ -49,7 +49,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                 choices: [
                     { name: chalk.cyanBright('Exibir Catálogo'), value: 'listar' },
                     { name: chalk.cyanBright('Exibir detalhes do filme'), value: 'exibir' },
-                    { name: chalk.cyanBright('Modo adm'), value: 'admin' },
+                    { name: chalk.magentaBright.bold('Modo Administrado'), value: 'admin' },
                     { name: chalk.cyanBright('Sair da operação'), value: 'sair' }
                 ]
             }
@@ -65,7 +65,6 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     choices: [
                         { name: chalk.cyanBright('Exibir Catálogo'), value: 'listar' },
                         { name: chalk.cyanBright('Exibir detalhes do filme'), value: 'exibir' },
-                        { name: chalk.cyanBright('Modo adm'), value: 'admin' },
                         { name: chalk.cyanBright('Adicionar um filme'), value: 'adicionar' },
                         { name: chalk.cyanBright('Atualizar um filme'), value: 'atualizar' },
                         { name: chalk.cyanBright('Deletar um filme'), value: 'deletar' },
@@ -105,13 +104,31 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                             const respostaADM = await inquirer.prompt(menuADM)
 
                             switch (respostaADM.opcaoADM) {
+
+                                case 'listar':
+                                    const filmes = await listarFilmes();
+            
+                                    if (Array.isArray(filmes) && filmes.length > 0) {
+                                        console.log(chalk.green('Catálogo'))
+            
+                                        filmes.forEach(filme => {
+                                            console.log(`${chalk.cyan(filme.id)}: ${chalk.blueBright(filme.nome)} , ${chalk.yellow(filme.genero)}`)
+                                        })
+                                    } else {
+                                        console.log(chalk.yellow('Nenhum filme encontrado.'))
+                                    }
+            
+                                    exibirMenu();
+                                    break;
+
                                 case 'adicionar':
 
                                     const filmeNovo = await inquirer.prompt([
                                         {
                                             message: "Digite o ID do filme: ",
-                                            type: "input",
+                                            type: "number",
                                             name: "id",
+                                            default: 0
                                         },
                                         {
                                             message: "Digite o nome do filme: ",
@@ -130,20 +147,26 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                                     try {
 
                                         filmeNovo.id = parseInt(filmeNovo.id)
-                                        dados.push(dados.id = filmeNovo)
 
-                                        const jsonData = JSON.stringify(dados, null, 2)
+                                        if (filmeNovo.id == dados.id) {
+                                            console.log(chalk.red('Esse ID ja existe.'))
+                                        } else {
 
-                                        console.log(chalk.green('Filme adicionado com sucesso!!'));
-                                        fs.writeFileSync('../filmes.json', jsonData, err => {
-                                            if (err) throw err;
-                                        })
+                                            dados.push(dados.id = filmeNovo)
 
-                                        axios.post('http://localhost:3000/filmes/', {
-                                            id: filmeNovo.id,
-                                            nome: filmeNovo.nome,
-                                            genero: filmeNovo.genero
-                                        })
+                                            const jsonData = JSON.stringify(dados, null, 2)
+
+                                            console.log(chalk.green('Filme adicionado com sucesso!!'));
+                                            fs.writeFileSync('../filmes.json', jsonData, err => {
+                                                if (err) throw err;
+                                            })
+
+                                            axios.post('http://localhost:3000/filmes/', {
+                                                id: filmeNovo.id,
+                                                nome: filmeNovo.nome,
+                                                genero: filmeNovo.genero
+                                            })
+                                        }
 
                                     } catch (error) {
                                         console.error(chalk.red(error))
@@ -154,7 +177,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                                     const filmeAtualizado = await inquirer.prompt([
                                         {
                                             message: "Digite o ID do filme: ",
-                                            type: "input",
+                                            type: "number",
                                             name: "id",
                                         },
                                         {
@@ -174,20 +197,25 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                                     try {
                                         filmeAtualizado.id = parseInt(filmeAtualizado.id)
 
-                                        dados[filmeAtualizado.id - 1] = filmeAtualizado
-                                        const jsonData = JSON.stringify(dados, null, 2)
+                                        if (filmeAtualizado.id == 0 || filmeAtualizado.id != dados.id) {
+                                            console.log(chalk.red('ID inexistente'))
+                                        } else {
 
-                                        console.log(chalk.green('Filme atualizado com sucesso!!'));
-                                        fs.writeFileSync('../filmes.json', jsonData, err => {
-                                            if (err) throw err;
-                                        })
+                                            dados[filmeAtualizado.id - 1] = filmeAtualizado
+                                            const jsonData = JSON.stringify(dados, null, 2)
 
-                                        axios.patch(`http://localhost:3000/filmes/${dados}`, {
-                                            id: filmeAtualizado.id,
-                                            nome: filmeAtualizado.nome,
-                                            genero: filmeAtualizado.genero
+                                            console.log(chalk.green.bold('Filme atualizado com sucesso!!'));
+                                            fs.writeFileSync('../filmes.json', jsonData, err => {
+                                                if (err) throw err;
+                                            })
 
-                                        })
+                                            axios.patch(`http://localhost:3000/filmes/${dados}`, {
+                                                id: filmeAtualizado.id,
+                                                nome: filmeAtualizado.nome,
+                                                genero: filmeAtualizado.genero
+
+                                            })
+                                        }
                                     } catch (error) {
                                         console.error(chalk.red(error))
                                     }
@@ -198,32 +226,61 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                                     const deletarFilme = await inquirer.prompt([
                                         {
                                             message: "Digite o ID do filme: ",
-                                            type: "input",
+                                            type: "number",
                                             name: "id",
                                         },
 
                                     ]);
 
                                     try {
-                                        deletarFilme.id = parseInt(deletarFilme.id)
-                                        dados.splice(dados.id = deletarFilme.id - 1, 1)
-                                        const jsonData = JSON.stringify(dados, null, 2)
 
-                                        console.log(chalk.green('Filme deletado com sucesso!!'));
-                                        fs.writeFileSync('../filmes.json', jsonData, err => {
-                                            if (err) throw err;
-                                        })
+                                        if (filmeAtualizado.id <= 0) {
+                                            console.log(chalk.red('ID inexistente'))
+                                        } else {
 
-                                        axios.delete(`http://localhost:3000/filmes/${dados.id}`)
+                                            deletarFilme.id = parseInt(deletarFilme.id)
+                                            dados.splice(dados.id = deletarFilme.id - 1, 1)
+                                            const jsonData = JSON.stringify(dados, null, 2)
 
+                                            console.log(chalk.green('Filme deletado com sucesso!!'));
+                                            fs.writeFileSync('../filmes.json', jsonData, err => {
+                                                if (err) throw err;
+                                            })
 
+                                            axios.delete(`http://localhost:3000/filmes/${dados.id}`)
+
+                                        }
                                     } catch (error) {
                                         console.error(chalk.red(error))
                                     }
                                     exibirMenu();
                                     break;
+
+                                    case 'exibir':
+                        const idReposta = await inquirer.prompt([
+                            {
+                                type: "input",
+                                name: "id",
+                                message: chalk.blue('Digite o ID do filme: ')
+                            }
+                        ]);
+
+                        const filme = await exibirDetalhesCatálogo(idReposta.id);
+                        if (filme) {
+                            console.log(`${chalk.cyan(filme.id)}: ${chalk.blueBright(filme.nome)} ${chalk.yellow(filme.genero)}`)
+                        } else {
+                            console.log(chalk.yellow('Filme não encontrado'))
+                        }
+                        exibirMenu();
+                        break;
+
+                    case 'sair':
+                        console.log(chalk.yellow('Saindo do sistema...'))
+                        break;
                             }
 
+                        } else {
+                            console.log(chalk.red('Senha Incorreta.'))
                         }
                         break;
                     case 'exibir':
