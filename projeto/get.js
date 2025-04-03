@@ -2,7 +2,6 @@ import axios from "axios"
 import express from "express"
 
 axios.get('http://localhost:3000/filmes/')
-
     .then(response => {
         console.log('Cátalogo completo recebido: ', response.data)
     })
@@ -11,7 +10,6 @@ axios.get('http://localhost:3000/filmes/')
     })
 
 axios.get('http://localhost:3000/filmes/1')
-
     .then(response => {
         console.log('ID filme recebido: ', response.data)
     })

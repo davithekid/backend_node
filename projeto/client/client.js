@@ -4,8 +4,8 @@ import inquirer from 'inquirer'
 import fs from 'fs'
 import { generateKey } from "crypto";
 import { assert } from "console";
+import { url } from "inspector";
 const API_URL = 'http://localhost:3000';
-
 
 // lendo meu arquivo json
 fs.readFile('../filmes.json', 'utf8', (err, data) => {
@@ -38,6 +38,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
             return null
         }
     }
+
 
     async function exibirMenu() {
         console.log('\n');
@@ -78,6 +79,7 @@ fs.readFile('../filmes.json', 'utf8', (err, data) => {
                     break;
 
                     case 'adicionar':
+
                     const filmeNovo = await inquirer.prompt([
                         {
                             message: "Digite o ID do filme: ",

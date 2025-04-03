@@ -7,38 +7,30 @@ import { log } from "console";
 const app = express();
 const port = 3000;
 
-
 const logger = (req, res, next) => {
     const data = new Date();
-    console.log(`${data.toISOString()} ${req.method} ${req.url}`)
+    console.log(`${data.toISOString()} ACESSANDO: ${req.method} ${req.url}`)
     next();
 
-    const newLine = `${data.toISOString()} ${req.method} ${req.url}`;
+    const newLine = `${data.toISOString()} ACESSANDO: ${req.method} ${req.url}`;
     fs.appendFile('arquivo.txt', newLine, err => {
         if (err) throw err;
-        console.log('Logging salvo')
+        console.log('Salvando logging')
     })
-    
 }
 
 app.use(logger)
 
-// app.use(logger)
-app.use(express.json()); // middleware
-
-
 // rota padrão
 app.get('/' , (req, res) => {
-    res.status(200).send('Home')
+    res.status(200).send('<h1>Página Inicial</h1>')
 })
 
-app.use('/filmes', rotasFilmes)
-app.use('/admin', rotasAdmin)
+app.use('/admin', rotasAdmin) // ADMIN 
+app.use('/filmes', rotasFilmes) // FILMES
 
 app.use((req, res)=> {
-    res.status(404).send('<h1 style="color:red;">ERROR 404... Página não encontrada</h1>');
-    // res.send('<p style="color:red;">oops... essa página não existe.</p>');
-})
+    res.status(404).send('<h1 style="color:red;">Página não encontrada...</h1>');})
 
 // server rodando
 app.listen(port, () => {
