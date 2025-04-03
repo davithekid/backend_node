@@ -6,8 +6,8 @@
   },
   {
     "id": 2,
-    "nome": "Scarface",
-    "genero": "drama, crime, ação"
+    "nome": "DSA",
+    "genero": "DSA"
   },
   {
     "id": 3,
@@ -56,7 +56,7 @@
   },
   {
     "id": 12,
-    "nome": "ad",
-    "genero": "ad"
+    "nome": "das",
+    "genero": "dsa"
   }
 ]
