@@ -3,6 +3,7 @@ import fs from 'fs'
 import axios from "axios";
 const router = express.Router();
 
+
 let filmes = [];
 try {
     const data = fs.readFileSync('filmes.json', 'utf8');

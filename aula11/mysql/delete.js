@@ -1,6 +1,6 @@
 import db from './conexao.js'
 
-db.query('DELETE FROM cliente where id = ?', 2, (err, results) => {
+db.query('DELETE FROM cliente where id = ?', 7, (err, results) => {
     if (err) {
         console.error('Erro ao excluir dados: ', err)
         return;
