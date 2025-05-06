@@ -1,113 +1,113 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'loja_2md',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+    const pool = mysql.createPool({
+        host:'localhost',
+        user:'root',
+        password: '',
+        database: 'loja_2md',
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 1
 
+    });
 async function getConnection() {
-    return pool.getConnection();
+    return   pool.getConnection();
 }
 
-// funcão para ler todos os registros
-async function readAll(table, where = null) {
+//Função para ler todos os registros
+async function readAll (table, where = null){
     const connection = await getConnection();
-    try {
+    try{
+        let sql = `SELECT * FROM  ${table}`
+        if (where){
+            sql += ` WHERE ${where}` // ESSE ESPAÇO ANTES DO WHERE É ESSENCIAL
+        }
+        const [rows] = await connection.execute(sql);
+        return rows
+    } catch (err) {
+        console.error('Erro ao ler o registros: ', err)
+        throw err;
+    } finally {
+        connection.release();
+    }
+}
+
+
+// Função para ler um unico registro
+async function read(table, where) {
+     const connection = await getConnection();
+     try {
         let sql = `SELECT *FROM ${table}`;
         if (where) {
             sql += ` WHERE ${where}`
         }
-
-        const [rows] = await connection.execute(sql);
-        return rows;
-    } catch (err) {
-        console.error('Erro ao ler registros: ', err);
-        throw err;
-    } finally {
-        connection.realease();
-    }
-}
-
-// função para ler um registro específico
-async function read(table, where) {
-    const connection = await getConnection();
-    try {
-        let sql = `SELECT * FROM ${table}`;
-        if (where) {
-            sql += ` WHERE ${where}`;
-        }
-
         const [rows] = await connection.execute(sql);
         return rows[0] || null;
-    } catch (err) {
-        console.error('Erro ao ler registros: ', err)
+     } catch (err) {
+        console.error('Erro ao ler o registros: ', err)
         throw err;
     } finally {
-        connection.realease();
+        connection.release()
+    
     }
 }
 
-// função para inserir dados
+
+// Função para inserir dados
 async function create(table, data) {
     const connection = await getConnection();
     try {
-        const columns = Object.keys(data).join(', ');
-        const placeholders = Array(Object.keys(data).length).fill('?').join(', ') // VALUES (?, ?, ?)
-        // INSERT INTO cliente (nome, endereco, contato) VALUES (?, ?, ?)
-        const sql = `INSERT INTO ${table} (${columns}) VALUES (${placeholders})` // aqui criamos nossa query
-
-        const values = Object.values(data);
-
-        const [result] = await connection.execute(sql, values);
-
-        return result.insertId;
+        const columns = Object.keys(data).join(', ') //Oject é uma função inerna para manipular objetos -- AQUI ELE PEGA SÓ A KEY DE UM OBJECT -- É RELEVANTE ', ' O ESPACÇO
+        //(nome, email, endereco)
+        const placeholders = Array(Object.keys(data).length).fill('?').join(', ') // aqui eu conto quantas keys são prencidas com "?" e juntar com ", " 
+        //VALUES (?, ?, ?)
+        const sql = `INSERT INTO ${table} (${columns}) VALUES(${placeholders})`;
+        // INSERT INTO clintes (nome, email, endereco) VALUES (?, ?, ?)
+        const values = Object.values(data)
+        const [result] = await connection.execute(sql, values)
+        return result.insertId
     } catch (err) {
-        console.error('Erro ao inserir registros: ', err)
+        console.error("Erro ao inserir registros: ", err)
         throw err;
     } finally {
-        connection.realease();
+        connection.release();
     }
 }
 
-// função para atualizar um registro
-async function update(table, data, where) {
-    const connection = await getConnection();
-    try {
-        const set = Object.keys(data).map(column => `${column} = `).join(', ');
 
-        const sql = `UPDATE ${table} SET ${set} WHERE ${where}`;
+//Função para ataulizar um registro
+async function update (table, data , where) {
+    const connetion = await getConnection();
+    try {
+        const set = Object.keys(data).map(column => `${column} = ?`).join(', ');
+
+        const sql = `UPDATE ${table} SET ${set} WHERE ${where}`
         const values = Object.values(data);
 
-        const [result] = await connection.execute(sql, [...values]);
-        return result.affectedRows
-
-    } catch (err) {
-        console.err('Erro ao atualizar registros: ', err)
-    } finally {
-        connection.realease();
-    }
-}
-
-// função para deletar um registro
-async function deleteRecord(table, where) {
-    const connection = await getConnection();
-    try {
-        const sql = `DELETE FROM ${table} WHERE ${where}`;
-        const [result] = await connection.execute(sql);
+        const [result] = await connetion.execute(sql, [...values])
         return result.affectedRows;
-    } catch (err) {
-        console.err('Erro ao deletar registros: ', err)
+    }catch (err) {
+        console.error("Erro ao ataulizar registros: ", err)
+        throw err;
     } finally {
-        connection.realease();
+        connetion.release();
     }
 }
-                                                    // exportando deleteRecords como delete
-export default { create, readAll, read, update, delete: deleteRecord }
 
+//Função para excluir um registro 
+async function deleteRecord(table, where, ) {
+    const connetion = await getConnection();
+    try{
+        const sql = `DELETE FROM ${table} WHERE ${where}`
+        const [result] = await connetion.execute(sql);
+        return result.affectedRows;
+    }catch (err) {
+        console.error("Erro ao ataulizar registros: ", err);
+        throw err;
+    } finally {
+        connetion.release();
+    }
+    
+}
 
-
+export default {create, readAll, read, update, delete:deleteRecord } //Estou exportando DELETRECORDR como DELETE, ent ela está renomeada
