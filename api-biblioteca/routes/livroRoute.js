@@ -29,12 +29,12 @@ router.put('/:id', authMiddleware, upload.single('capa'), atualizarLivroControll
 router.delete('/:id', authMiddleware, excluirLivroController)
 
 router.options('/', (req, res) => {
-    res.setHeader('Allow', 'GET, OPTIONS');
+    res.setHeader('Allow', 'GET, POST, OPTIONS');
     res.status(204).send();
 })
 
 router.options('/:id', (req, res) => {
-    res.setHeader('Allow', 'GET, OPTIONS');
+    res.setHeader('Allow', 'GET, PUT, DELETE, OPTIONS');
     res.status(204).send();
 })
 export default router;
