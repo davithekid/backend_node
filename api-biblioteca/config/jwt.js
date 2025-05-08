@@ -1,0 +1,1 @@
+export const JWT_SECRET = 'SUA_SENHA_SECRETA_GERADA';

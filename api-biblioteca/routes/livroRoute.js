@@ -1,9 +1,32 @@
 import Router from 'express'
-import { listarLivroController, obterLivroPorIdController } from '../controllers/LivroController.js';
+import { listarLivroController, obterLivroPorIdController, criarLivroController, atualizarLivroController, excluirLivroController } from '../controllers/LivroController.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 const router = Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../uploads/'))
+    },
+    filename: (req, file, cb) => {
+        const nomeArquivo = `${Date.now()}-${file.originalname}`;
+        cb(null)
+    }
+})
+
+const upload = multer({storage: storage});
 
 router.get('/', listarLivroController);
+router.post('/', authMiddleware, upload.single('capa'), criarLivroController)
+
 router.get('/:id', obterLivroPorIdController)
+router.put('/:id', authMiddleware, upload.single('capa'), atualizarLivroController)
+router.delete('/:id', authMiddleware, excluirLivroController)
 
 router.options('/', (req, res) => {
     res.setHeader('Allow', 'GET, OPTIONS');

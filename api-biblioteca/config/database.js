@@ -1,10 +1,12 @@
 import mysql from 'mysql2/promise'
+import bcrypt from 'bcryptjs'
 
 const pool = mysql.createPool({
 
     host: 'localhost',
     user: 'root',
-    database: 'biblioteca',
+    database: 'biblioteca_api',
+    password: '',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -110,4 +112,14 @@ async function deleteRecord(table, where,) {
 
 }
 
-export { create, readAll, read, update, deleteRecord } //Estou exportando DELETRECORDR como DELETE, ent ela está renomeada
+async function compare(senha, hash) {
+        try {
+            // comparação da senha com o hash usando o bccypt
+            return await bcrypt.compare(senha, hash);
+        } catch (err) {
+            console.error('Erro ao comparar a senha com o hash: ', err)
+            return false;
+        }
+}
+
+export { create, readAll, read, update, deleteRecord, compare } //Estou exportando DELETRECORDR como DELETE, ent ela está renomeada
