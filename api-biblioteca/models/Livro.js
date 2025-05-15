@@ -1,4 +1,4 @@
-import { readAll, read } from '../config/database.js'
+import { readAll, read, create, update } from '../config/database.js'
 
 const listarLivros = async () => {
     try {

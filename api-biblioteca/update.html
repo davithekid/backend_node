@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edição de Livro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input[type="text"],
+        input[type="file"] {
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Editar Livro</h1>
+
+    <form id="livroForm">
+        <label for="id">ID do Livro:</label>
+        <input type="text" id="id" name="id" required placeholder="Digite o ID do livro que você deseja editar" readonly>
+
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo">
+
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" name="descricao">
+
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="isbn">
+
+        <label for="capa">Nova Capa do Livro:</label>
+        <input type="file" id="capa" name="capa" accept="image/*">
+
+        <button type="submit">Atualizar Livro</button>
+    </form>
+
+    <div id="response">
+        Resposta do Servidor:
+        <pre id="responseContent"></pre>
+    </div>
+
+    <script>
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        const livroId = getParameterByName('id');
+
+        if (!livroId) {
+            document.body.innerHTML = '<p style="color: red;">ID do livro não especificado na URL. Use: testeUpdate.html?id=SEU_ID</p>';
+        } else {
+            document.getElementById('id').value = livroId;
+
+            fetch(`http://localhost:3000/livros/${livroId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('titulo').value = data.titulo || '';
+                    document.getElementById('descricao').value = data.descricao || '';
+                    document.getElementById('isbn').value = data.isbn || '';
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar as informações do livro:', error);
+                    document.getElementById('responseContent').textContent = 'Erro ao carregar as informações do livro.';
+                });
+
+            document.getElementById('livroForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const form = document.getElementById('livroForm');
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(`http://localhost:3000/livros/${livroId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidGlwbyI6ImFkbWluIiwiaWF0IjoxNzQ3MTQzNzc4LCJleHAiOjE3NDcxNDczNzh9.RXP5n9M5bjtIbIndI6NSgYYAzwJwwp61rMJD8050l-g` // Substitua pelo seu token JWT
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    document.getElementById('responseContent').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    console.error('Erro:', error);
+                    document.getElementById('responseContent').textContent = 'Erro ao enviar os dados.';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

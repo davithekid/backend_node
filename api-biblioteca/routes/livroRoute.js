@@ -1,5 +1,5 @@
 import Router from 'express'
-import { listarLivroController, obterLivroPorIdController, criarLivroController, atualizarLivroController, excluirLivroController } from '../controllers/LivroController.js';
+import { listarLivrosController, obterLivroPorIdController, criarLivroController, atualizarLivroController, excluirLivroController } from '../controllers/LivroController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 import path from 'path';
@@ -15,13 +15,13 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const nomeArquivo = `${Date.now()}-${file.originalname}`;
-        cb(null)
+        cb(null, nomeArquivo)
     }
 })
 
 const upload = multer({storage: storage});
 
-router.get('/', listarLivroController);
+router.get('/', listarLivrosController);
 router.post('/', authMiddleware, upload.single('capa'), criarLivroController)
 
 router.get('/:id', obterLivroPorIdController)
